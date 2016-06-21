@@ -133,8 +133,8 @@ def main():
     
     targetList = [_.strip() for _ in open('stocknumber.csv', 'rb')]
 
-    current = datetime.datetime.now()
-    while(current.hour < 13 and current.hour > 8):
+    current = datetime.datetime.utcnow()
+    while(current.hour < 5 and current.hour > 0):
         controller = CrawlerController(targetList)
         recorder = Recorder()
 
