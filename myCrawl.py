@@ -5,10 +5,12 @@ import requests
 import json
 import csv
 import time
+import datetime
 from decimal import Decimal
 from os import mkdir
 from os.path import isdir
 from datetime import date
+
 
 totalVolume = 0
 filterVolume = 0
@@ -131,7 +133,8 @@ def main():
     
     targetList = [_.strip() for _ in open('stocknumber.csv', 'rb')]
 
-    while(1):
+    current = datetime.datetime.now()
+    while(current.hour < 13 and current.hour > 8):
         controller = CrawlerController(targetList)
         recorder = Recorder()
 
@@ -139,7 +142,9 @@ def main():
 
         recorder.countMainPower(dataList)
         #recorder.recordCSV(dataList)
-        time.sleep(5)    
+        time.sleep(5) 
+    else:
+        print 'not open'   
 
 if __name__ == '__main__':
     main()
