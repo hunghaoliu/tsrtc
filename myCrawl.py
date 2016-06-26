@@ -65,8 +65,12 @@ class Crawler():
             headers = {'Accept-Language':'zh-TW'}
         )
 
-        response = req.get(self.queryURL)
-        dataList = self._handleResponse(response)
+        try:
+            response = req.get(self.queryURL)
+            dataList = self._handleResponse(response)
+        except Exception, e:
+            print e
+            dataList = [] 
 
         return dataList
         
@@ -74,7 +78,7 @@ class Recorder():
     '''record data to csv'''
     def __init__(self, path='data'):
         self.folderPath = '{}/{}'.format(path, date.today().strftime('%Y%m%d'))
-        self._checkTodayFolder()
+        #self._checkTodayFolder()
 
     def _checkTodayFolder(self):
         if not isdir(self.folderPath):
@@ -105,9 +109,11 @@ class Recorder():
         global totalVolume
         global filterVolume
         global buyVolume
+
         for data in dataList:
             try:
-                
+                print str(data['t'])
+        
                 if totalVolume >= float(data['v']):
                     #print 'duplicate volume'
                     continue
@@ -115,13 +121,14 @@ class Recorder():
                     totalVolume = float(data['v'])
                 
                 if int(data['tv']) > 20:
-                    filterVolume += int(data['tv'])
+                    filterVolume += float(data['tv'])
 
                     buyList = data['a'].split('_')
                     if (float(data['z']) < float(self._getFirst(buyList))):
-                        buyVolume += int(data['tv'])
-
-                print str(buyVolume/filterVolume) + " " + data['z']
+                        buyVolume += float(data['tv'])
+                else:
+                    continue
+                print str(buyVolume) + " " + str(filterVolume) + " " + str(buyVolume/filterVolume) + " " + data['z']
                 
 
             except Exception as e:
